@@ -4,7 +4,7 @@ import Player from "./components/Player";
 import Cancion from "./components/Cancion";
 import Library from "./components/Library";
 import Nav from "./components/Nav";
-
+import { playAudio } from "./util";
 import { useState, useRef } from "react";
 //import songs data
 import data from "./data.js"
@@ -23,6 +23,8 @@ function App() {
     currentTime: 0,
     duration: 0
   })
+
+
   const [libraryStatus, setLibraryStatus] = useState(false);
 
   //functions
@@ -30,11 +32,23 @@ function App() {
     const current = e.target.currentTime;
     const duration = e.target.duration;
 
+    const roundedCurrent = Math.round(current)
+    const roundedDuration = Math.round(duration)
+
+    const animationPercentage = Math.round(roundedCurrent / roundedDuration *100)
+
     setCancionInfo({ ...cancionInfo, currentTime: current, duration: duration });
   }
 
+  // const cancionEndedHandler = () => {
+  //   let currentIndex = canciones.findIndex((cancion) => cancion.id === currentCancion.id);
+  //   setCurrentCancion(canciones[(currentIndex + 1) % canciones.length]);
+
+  //   audioRef.onLoadedMetadata({playAudio});
+  // }
+
   return (
-    <div className="App">
+    <div className= {`App ${libraryStatus? "library-active": ""}`}>
       <Nav libraryStatus={libraryStatus} setLibraryStatus={setLibraryStatus} />
       <Cancion currentCancion={currentCancion}></Cancion>
       <Player
@@ -46,25 +60,32 @@ function App() {
         cancionInfo={cancionInfo}
         canciones={canciones}
         setCurrentCancion={setCurrentCancion}
-        setCanciones ={setCanciones}>
-          
+        setCanciones={setCanciones}
+        
+        timeUpdateHandler={timeUpdateHandler}
+        
+    
+        >
+
       </Player>
 
-      <Library 
-        canciones={canciones} 
+      <Library
+        canciones={canciones}
         setCurrentCancion={setCurrentCancion}
         audioRef={audioRef}
         isPlaying={isPlaying}
-        setCanciones = {setCanciones}
+        setCanciones={setCanciones}
         libraryStatus={libraryStatus}
+        timeUpdateHandler={timeUpdateHandler}
       />
-      <audio
+      {/* <audio
         ref={audioRef}
         onTimeUpdate={timeUpdateHandler}
+        onEnded={cancionEndedHandler}
         onLoadedMetadata={timeUpdateHandler}
         src={currentCancion.audio}>
 
-      </audio>
+      </audio> */}
     </div>
   );
 }

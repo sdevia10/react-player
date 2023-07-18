@@ -12,6 +12,14 @@ h3,h4{
     font-weight: 400;
     color: rgba(100,100,100,1)
 }
+
+.App
+{
+    transition: all 0.5s ease;
+}
+.library-active{
+    margin-left: 27%;
+}
 @import "./cancion.scss";
 @import "./player.scss";
 @import "./library.scss";
